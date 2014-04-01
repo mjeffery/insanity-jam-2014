@@ -17,7 +17,7 @@
 			load.setPreloadSprite(this.bar);
 
 			//PRELOAD RESOURCES HERE
-
+			Game.preload(load);	
 			//END PRELOAD
 		},
 		onLoadComplete: function() {

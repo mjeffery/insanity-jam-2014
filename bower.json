@@ -27,6 +27,8 @@
     "tests"
   ],
   "dependencies": {
-    "phaser-official": "~2.0.2"
+    "phaser-official": "~2.0.2",
+    "jquery": "~2.1.0",
+    "lodash": "~2.4.1"
   }
 }
