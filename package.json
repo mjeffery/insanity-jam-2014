@@ -1,0 +1,25 @@
+{
+  "name": "insanity-jam",
+  "version": "0.0.0",
+  "description": "\"The Rise and Fall of the Orc\", developed for Insanity Jam 2014",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "insanity",
+    "jam",
+    "phaser",
+    "html5",
+    "game"
+  ],
+  "author": "mjeffery",
+  "license": "None",
+  "devDependencies": {
+    "load-grunt-tasks": "^0.4.0",
+    "grunt": "^0.4.4",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-connect": "^0.7.1",
+    "grunt-usemin": "^2.1.0"
+  }
+}

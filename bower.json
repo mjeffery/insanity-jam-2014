@@ -1,0 +1,32 @@
+{
+  "name": "insanity-jam",
+  "version": "0.0.0",
+  "description": "\"The Rise and Fall of the Orc\" for Insanity Jam 2014",
+  "main": "index.html",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "insanity",
+    "jam",
+    "2014",
+    "html5",
+    "game",
+    "phaser"
+  ],
+  "authors": [
+    "mjeffery"
+  ],
+  "license": "None",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser-official": "~2.0.2"
+  }
+}
