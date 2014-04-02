@@ -11,13 +11,14 @@
 				add = this.add;
 
 			this.bar = add.sprite(303, 281,'loading-bar');
-		this.overlay = add.sprite(298, 276, 'loading-bar-overlay');
+			this.overlay = add.sprite(298, 276, 'loading-bar-overlay');
 			
 			load.onLoadComplete.addOnce(this.onLoadComplete, this);
 			load.setPreloadSprite(this.bar);
 
 			//PRELOAD RESOURCES HERE
 			Game.preload(load);	
+			Unit.preload(load);
 			//END PRELOAD
 		},
 		onLoadComplete: function() {

@@ -14,7 +14,7 @@
 					h = $this.height();
 
 				if(x < 0) {
-					
+
 				}
 			}
 		}
@@ -30,5 +30,5 @@
 			});
 	}
 
-
+	exports.MouseScroller = MouseScroller;
 })(this);

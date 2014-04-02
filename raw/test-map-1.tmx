@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="60" height="40" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="terrain" tilewidth="32" tileheight="32">
+  <image source="../src/assets/img/placeholder tiles.png" width="128" height="128"/>
+ </tileset>
+ <layer name="terrain" width="60" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztmNuOwzAIRK3spWn7//+764dIFjvAAG6ybYPEm2N8bDPgLK215U39s+BHx4+u79Zqdi3uw3cxvmdfO8W6tvfi7cYwvxJvN48ZreHy6x+kr078kXchxjO2rU+by2JGvHKNnlvsaK4K84WcS2PovHcxVtNATxMje5dllvNpeu/xSuZM7OhdYfJhs+0Os7VtOzOLN8pc5ZX5YHm2jstclrwR7lm8UY/2LLJGIN7uo04zWpThjfZKmZqGagTijLJEeDvXreF91nIvc7at/dVfGRfpM4qD5mF4rTsl11E920bGYnKY+abCe2+1/mwWpzWXtKN42fn34B1rb4SXzV2kt1FfifnYftLSSk27IjqF9Dbq6A4yvTFTf5lz9tis3uSRvDLH2H7DY9Ys2894bwNUK2fyarXYYpZvpcrZRbUzw2vtJcPMvuNk73IEb4QxWjuQjb3L3rzZeFXmbS0yPtI8pCevwsuuUY5DdTLCa/UHa2DcDF5Pn7X/Bgwv2x+w9dX7p2XxMu82bQzL+4h/AlavJ+OPPVwlz7T6iOLN5rXeplX90PJQWwuKN96VDB/qjfbi9e6nFy/SR1j3MMsbfVd5ZzF7fy1HvKP2Zdaf1ZM9mbO99jMy/wdW5l7N8qMZTz/99OfyHyKzI6E=
+  </data>
+ </layer>
+</map>
