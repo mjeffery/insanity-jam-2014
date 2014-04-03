@@ -19,6 +19,8 @@
 			//PRELOAD RESOURCES HERE
 			Game.preload(load);	
 			Unit.preload(load);
+			IconBar.preload(load);
+			CommandIndicator.preload(load);
 			//END PRELOAD
 		},
 		onLoadComplete: function() {

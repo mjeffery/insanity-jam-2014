@@ -28,6 +28,21 @@
 			map.setCollisionBetween(2, 10, true);
 			layer.resizeWorld();
 
+			var iconBar = this.iconBar = new IconBar(game);
+			iconBar.x = Game.SCROLL_MARGIN;
+			iconBar.y = 600 - (Game.SCROLL_MARGIN + 64);
+			iconBar.fixedToCamera = true;
+
+			iconBar.events.onIconSelected.add(this.onIconSelected, this);
+			iconBar.events.onIconDeselected.add(this.onIconDeselected, this);
+
+			var selections = this.selections = new SelectionManager(game);
+			selections.events.onSelectionChange.add(function(selected, added, removed) {
+				if(_.isEmpty(selected)) this.iconBar.clear();
+				else this.iconBar.showIcons('move', 'attack', 'defend', 'stop');
+			}, this);
+
+			//TODO move this whole section into its own unit management area...
 			var unit = this.unit = new Unit(game, 1400, 522);
 			//TODO move to constructor
 			physics.enable(unit, Phaser.Physics.ARCADE);
@@ -35,11 +50,7 @@
 			unit.body.collideWorldBounds = true;
 			unit.body.acceleration.y = 350;
 			unit.inputEnabled = true;
-
-			unit.events.onInputDown.add(function(sprite, pointer) {
-				console.log('clicked');
-				sprite.selected = !sprite.selected;	
-			});
+			unit.events.onInputDown.add(selections.onInputDown, selections); 
 
 			add.existing(unit);
 
@@ -72,6 +83,20 @@
 			}
 			else {
 				unit.animations.play('falling');
+			}
+		},
+
+		onIconSelected: function(command) {
+			console.log('entering "' + command + '"');
+			var indicator = this.indicator = new CommandIndicator(this.game, 0, command);
+			indicator.fixToInput = true;
+			game.add.existing(indicator);
+		},
+		onIconDeselected: function(command) {
+			console.log('exiting "' + command + '"');
+			if(this.indicator) {
+				this.indicator.destroy();
+				this.indicator = null;
 			}
 		}
 	};

@@ -12,7 +12,7 @@
 		var selectBox = this.selectBox = game.make.sprite(0, 0, '1x1-select-box');
 		selectBox.anchor.setTo(0.5,0.5);
 		selectBox.smoothed = false;
-		selectBox.visible = true;
+		selectBox.visible = false;
 		this.addChild(selectBox);
 	}
 
