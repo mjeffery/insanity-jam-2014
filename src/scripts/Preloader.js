@@ -19,6 +19,10 @@
 			//PRELOAD RESOURCES HERE
 			Game.preload(load);	
 			Unit.preload(load);
+			Soldier.preload(load);
+			Archer.preload(load);
+			Peasant.preload(load);
+			Priest.preload(load);
 			IconBar.preload(load);
 			CommandIndicator.preload(load);
 			//END PRELOAD

@@ -22,12 +22,14 @@
 			this.stage.backgroundColor = '#6495ED';
 			physics.startSystem(Phaser.Physics.ARCADE);
 
+			// TILEMAP
 			var map = this.map = add.tilemap('test-map-0');
 			var layer = this.layer = map.createLayer('terrain');
 			map.addTilesetImage('terrain', 'placeholder-tiles');
 			map.setCollisionBetween(2, 10, true);
 			layer.resizeWorld();
 
+			// ICON BAR
 			var iconBar = this.iconBar = new IconBar(game);
 			iconBar.x = Game.SCROLL_MARGIN;
 			iconBar.y = 600 - (Game.SCROLL_MARGIN + 64);
@@ -36,26 +38,29 @@
 			iconBar.events.onIconSelected.add(this.onIconSelected, this);
 			iconBar.events.onIconDeselected.add(this.onIconDeselected, this);
 
+			// SELECTION MANAGER
 			var selections = this.selections = new SelectionManager(game);
+			
 			selections.events.onSelectionChange.add(function(selected, added, removed) {
 				if(_.isEmpty(selected)) this.iconBar.clear();
 				else this.iconBar.showIcons('move', 'attack', 'defend', 'stop');
 			}, this);
 
+			// UNITS!!!
 			//TODO move this whole section into its own unit management area...
-			var unit = this.unit = new Unit(game, 1400, 522);
-			//TODO move to constructor
-			physics.enable(unit, Phaser.Physics.ARCADE);
-			unit.anchor.setTo(0.5, 0.5);
-			unit.body.collideWorldBounds = true;
-			unit.body.acceleration.y = 350;
-			unit.inputEnabled = true;
-			unit.events.onInputDown.add(selections.onInputDown, selections); 
+			var units = this.units = add.group();
+			units.add(new Soldier(game, 1400, 522));
+			units.add(new Soldier(game, 1368, 522));
+			units.add(new Archer(game, 1336, 522));
+			units.add(new Peasant(game, 1304, 522));
+			units.add(new Priest(game, 1304-64, 522));
 
-			add.existing(unit);
+			units.forEach(function(unit) {
+				unit.events.onInputDown.add(selections.onInputDown, selections); 
+			}, this);
 
-			game.camera.x = unit.x - 400;
-			game.camera.y = unit.y - 300;
+			game.camera.x = 1000;
+			game.camera.y = 222;
 		},
 		update: function() {
 			var unit = this.unit,
@@ -76,14 +81,8 @@
 				this.camera.y += Game.CAMERA_SPEED;
 			}
 
-			physics.arcade.collide(this.unit, this.layer);
+			physics.arcade.collide(this.units, this.layer);
 
-			if(unit.body.onFloor()) {
-				unit.animations.play('stand');
-			}
-			else {
-				unit.animations.play('falling');
-			}
 		},
 
 		onIconSelected: function(command) {
