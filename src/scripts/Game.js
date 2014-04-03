@@ -59,6 +59,8 @@
 				unit.events.onInputDown.add(selections.onInputDown, selections); 
 			}, this);
 
+			game.world.bringToTop(iconBar);
+
 			game.camera.x = 1000;
 			game.camera.y = 222;
 		},

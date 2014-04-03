@@ -35,10 +35,11 @@
 			stop: this.addIcon('stop', 6, 6)
 		};
 
-		this.events = {
+		this.events = new Phaser.Events(); //since "events" is checked for all over the place...
+		_.extend(this.events, {
 			onIconSelected: new Phaser.Signal(),
-			onIconDeselected: new Phaser.Signal()
-		}
+			onIconDeselected: new Phaser.Signal(),
+		});		
 	}
 
 	IconBar.prototype = Object.create(Phaser.Group.prototype);

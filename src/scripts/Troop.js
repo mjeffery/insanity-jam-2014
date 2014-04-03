@@ -24,15 +24,17 @@
 	Troop.prototype = Object.create(Unit.prototype);
 	Troop.prototype.constructor = Troop;
 
-	_.extend(Troop.prototype, {
-		update: function() {
-			if(this.body.onFloor()) {
-				this.animations.play('stand');
-			}
-			else {
-				this.animations.play('falling');
-			}
+	Util.override(Troop.prototype, 'postUpdate', function() {
+		this.__super();
+		if(this.body.onFloor()) {
+			this.animations.play('stand');
 		}
+		else {
+			this.animations.play('falling');
+		}
+	});
+
+	_.extend(Troop.prototype, {
 	})	
 
 	exports.Troop = Troop;
