@@ -4,6 +4,11 @@
 		this.iconBar = iconBar;
 		this.commands = {};
 		this.activeCommand = null; 
+
+		this.events = {
+			onStartCommand: new Phaser.Signal(),
+			onEndCommand: new Phaser.Signal()
+		}
 	}
 
 	_.extend(CommandManager.prototype, {
@@ -13,14 +18,11 @@
 
 		update: function() {
 			var command = this.activeCommand;
-			if(command) {
-				var finished = command.update();
-				if(finished)
-					this.activeCommand = null;
-			}
+			if(command) command.update();
 		},
 
 		onSelectionChange: function(selected, added, removed) {
+			this.selection = selected;
 			this.iconBar.clear();
 
 			//selection was cleared...
@@ -37,11 +39,21 @@
 		onIconSelected: function(name) {
 			var command = this.commands[name];
 			if(command) {
+				this.events.onStartCommand.dispatch(name);
 				if(this.activeCommand)
 					this.activeCommand.cancel();
 
 				this.activeCommand = command;
-				command.start();
+				command.start(_.once(function(err, callback, context) {
+					if(!err)
+						_.forEach(this.selection, callback, context);
+					else 
+						console.log(err);
+
+					this.activeCommand = null;
+					this.iconBar.clearSelection();
+					this.events.onEndCommand.dispatch(name, err);
+				}.bind(this)));
 			}
 		},
 

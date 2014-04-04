@@ -16,6 +16,8 @@
 		this.inputEnabled = true;
 
 		this.createSelectBox(32, 32);
+
+		
 	}	
 
 	Troop.WALK_RATE = 6;
@@ -35,6 +37,13 @@
 	});
 
 	_.extend(Troop.prototype, {
+		update: function() {
+
+		},
+		
+		onMessage: function(msg) {
+
+		}
 	})	
 
 	exports.Troop = Troop;

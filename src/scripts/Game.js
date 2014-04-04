@@ -43,6 +43,7 @@
 			commands.add('move', new PickXCoordCommand(game, 'move'));
 			commands.add('attack', new PickXCoordCommand(game, 'attack'));
 			commands.add('defend', new PickXCoordCommand(game, 'defend'));
+			commands.add('stop', new StopCommand());
 			
 			selections.events.onSelectionChange.add(commands.onSelectionChange, commands);
 			iconBar.events.onIconSelected.add(commands.onIconSelected, commands);

@@ -18,6 +18,15 @@
 			selectBox.smoothed = false;
 			selectBox.visible = false;
 			this.addChild(selectBox);
+		},
+
+		send: function(msg) {
+			if(this.onMessage) 
+				this.onMessage(msg);
+		},
+
+		onMessage: function(msg) {
+			console.log(msg);
 		}
 	});
 
