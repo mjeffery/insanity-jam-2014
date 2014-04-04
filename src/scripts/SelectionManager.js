@@ -39,6 +39,11 @@
 			this.events.onSelectionChange.dispatch(this.units.slice(), added, removed);
 		},
 
+		onClickBackdrop: function() {
+			var removed = this.remove(this.units);
+			this.events.onSelectionChange.dispatch(this.units.slice(), [], removed);
+		},
+
 		add: function() {
 			var added = [];
 

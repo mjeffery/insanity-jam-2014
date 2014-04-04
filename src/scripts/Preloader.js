@@ -25,6 +25,7 @@
 			Priest.preload(load);
 			IconBar.preload(load);
 			CommandIndicator.preload(load);
+			Backdrop.preload(load);
 			//END PRELOAD
 		},
 		onLoadComplete: function() {

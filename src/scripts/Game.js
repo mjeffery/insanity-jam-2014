@@ -22,12 +22,16 @@
 			this.stage.backgroundColor = '#6495ED';
 			physics.startSystem(Phaser.Physics.ARCADE);
 
+			var backdrop = this.backdrop = new Backdrop(game);
+			game.add.existing(backdrop);
+
 			// TILEMAP
 			var map = this.map = add.tilemap('test-map-0');
 			var layer = this.layer = map.createLayer('terrain');
 			map.addTilesetImage('terrain', 'placeholder-tiles');
 			map.setCollisionBetween(2, 10, true);
 			layer.resizeWorld();
+
 
 			// ICON BAR
 			var iconBar = this.iconBar = new IconBar(game);
@@ -44,10 +48,15 @@
 			commands.add('attack', new PickXCoordCommand(game, 'attack'));
 			commands.add('defend', new PickXCoordCommand(game, 'defend'));
 			commands.add('stop', new StopCommand());
-			
+
 			selections.events.onSelectionChange.add(commands.onSelectionChange, commands);
 			iconBar.events.onIconSelected.add(commands.onIconSelected, commands);
 			iconBar.events.onIconDeselected.add(commands.onIconDeselected, commands);
+
+			backdrop.events.onClickBackdrop.add(selections.onClickBackdrop, selections);
+
+			commands.events.onStartCommand.add(backdrop.onStartCommand, backdrop);
+			commands.events.onEndCommand.add(backdrop.onEndCommand, backdrop);
 
 			// UNITS!!!
 			//TODO move this whole section into its own unit management area...
@@ -56,7 +65,7 @@
 			units.add(new Soldier(game, 1368, 522));
 			units.add(new Archer(game, 1336, 522));
 			units.add(new Peasant(game, 1304, 522));
-			units.add(new Priest(game, 1304-64, 522));
+			units.add(new Priest(game, /*1304-64*/ 1000, 522));
 
 			units.forEach(function(unit) {
 				unit.events.onInputDown.add(selections.onInputDown, selections); 
@@ -68,7 +77,7 @@
 			game.camera.y = 222;
 		},
 		update: function() {
-			var unit = this.unit,
+			var units = this.units,
 				physics = this.game.physics;
 
 			//TODO I don't like how the camera doesn't have a velocity...
@@ -86,7 +95,8 @@
 				this.camera.y += Game.CAMERA_SPEED;
 			}
 
-			physics.arcade.collide(this.units, this.layer);
+			physics.arcade.collide(units, this.layer);
+			units.callAll('think');
 
 			this.commands.update();
 
