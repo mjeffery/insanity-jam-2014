@@ -73,6 +73,10 @@
 				}, this);
 
 			return removed;
+		},
+
+		forEach: function(callback, context) {
+			_.each(this.units, callback, context);
 		}
 	};
 

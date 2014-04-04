@@ -10,7 +10,6 @@
 		);
 
 		this.anchor.setTo(0.5, 0);
-		this.fixToInput = false;
 	}
 
 	CommandIndicator.prototype = Object.create(Phaser.TileSprite.prototype);
@@ -28,14 +27,6 @@
 		load.image('command-indicator-blue', 'assets/img/vertical blue.png');
 		load.image('command-indicator-green', 'assets/img/vertical green.png');
 	}
-
-	_.extend(CommandIndicator.prototype, {
-		update: function() {
-			if(this.fixToInput) {
-				this.x = this.game.input.mousePointer.worldX;
-			}
-		}
-	});
 
 	exports.CommandIndicator = CommandIndicator;
 })(this);

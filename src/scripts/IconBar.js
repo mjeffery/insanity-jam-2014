@@ -62,7 +62,7 @@
 			return icon;
 		},
 
-		showIcons: function() {
+		display: function() {
 			this.callAll('kill');
 
 			var toShow = _.flatten(arguments),
@@ -106,7 +106,7 @@
 
 		clear: function() {
 			this.clearSelection();
-			this.showIcons();
+			this.display();
 		}
 	});
 

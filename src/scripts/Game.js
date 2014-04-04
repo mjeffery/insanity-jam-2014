@@ -35,16 +35,18 @@
 			iconBar.y = 600 - (Game.SCROLL_MARGIN + 64);
 			iconBar.fixedToCamera = true;
 
-			iconBar.events.onIconSelected.add(this.onIconSelected, this);
-			iconBar.events.onIconDeselected.add(this.onIconDeselected, this);
-
 			// SELECTION MANAGER
 			var selections = this.selections = new SelectionManager(game);
+
+			// COMMAND MANAGER
+			var commands = this.commands = new CommandManager(game, iconBar);
+			commands.add('move', new PickXCoordCommand(game, 'move'));
+			commands.add('attack', new PickXCoordCommand(game, 'attack'));
+			commands.add('defend', new PickXCoordCommand(game, 'defend'));
 			
-			selections.events.onSelectionChange.add(function(selected, added, removed) {
-				if(_.isEmpty(selected)) this.iconBar.clear();
-				else this.iconBar.showIcons('move', 'attack', 'defend', 'stop');
-			}, this);
+			selections.events.onSelectionChange.add(commands.onSelectionChange, commands);
+			iconBar.events.onIconSelected.add(commands.onIconSelected, commands);
+			iconBar.events.onIconDeselected.add(commands.onIconDeselected, commands);
 
 			// UNITS!!!
 			//TODO move this whole section into its own unit management area...
@@ -84,6 +86,8 @@
 			}
 
 			physics.arcade.collide(this.units, this.layer);
+
+			this.commands.update();
 
 		},
 
