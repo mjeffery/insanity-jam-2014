@@ -2,6 +2,8 @@
 	function Soldier(game, x, y) {
 		Troop.call(this, game, x, y, 'knight');
 		this.commands = Soldier.COMMANDS;
+
+		this.setHp(100, 100);
 	}
 
 	Soldier.prototype = Object.create(Troop.prototype);

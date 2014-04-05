@@ -49,6 +49,7 @@
 			commands.add('defend', new PickXCoordCommand(game, 'defend'));
 			commands.add('stop', new StopCommand());
 
+			// hooking up the wires...
 			selections.events.onSelectionChange.add(commands.onSelectionChange, commands);
 			iconBar.events.onIconSelected.add(commands.onIconSelected, commands);
 			iconBar.events.onIconDeselected.add(commands.onIconDeselected, commands);
@@ -60,16 +61,27 @@
 
 			// UNITS!!!
 			//TODO move this whole section into its own unit management area...
-			var units = this.units = add.group();
-			units.add(new Soldier(game, 1400, 522));
-			units.add(new Soldier(game, 1368, 522));
-			units.add(new Archer(game, 1336, 522));
-			units.add(new Peasant(game, 1304, 522));
-			units.add(new Priest(game, /*1304-64*/ 1000, 522));
+			var humans = this.humans = add.group(),
+				orcs = this.orcs = add.group();
+				spawn = new Spawn(game, humans, orcs);
 
-			units.forEach(function(unit) {
+			humans.add(spawn.soldier(30, 16));
+			humans.add(spawn.soldier(31, 16));
+			humans.add(spawn.archer(36, 16));
+			humans.add(spawn.peasant(39, 16));
+			humans.add(spawn.priest(40, 16));
+
+			//these have to be added each time a humansly unit is added
+			humans.forEach(function(unit) {
 				unit.events.onInputDown.add(selections.onInputDown, selections); 
 			}, this);
+
+			//ORCS!!!!!
+			//TODO mvoe this whole section int is own management area
+			orcs.add(spawn.orc(12, 25));
+			orcs.add(spawn.orc(13, 25));
+			orcs.add(spawn.orc(14, 25));
+			orcs.add(spawn.orc(24, 18));
 
 			game.world.bringToTop(iconBar);
 
@@ -77,7 +89,8 @@
 			game.camera.y = 222;
 		},
 		update: function() {
-			var units = this.units,
+			var humans = this.humans,
+				orcs = this.orcs,
 				physics = this.game.physics;
 
 			//TODO I don't like how the camera doesn't have a velocity...
@@ -95,8 +108,10 @@
 				this.camera.y += Game.CAMERA_SPEED;
 			}
 
-			physics.arcade.collide(units, this.layer);
-			units.callAll('think');
+			physics.arcade.collide(humans, this.layer);
+			physics.arcade.collide(orcs, this.layer);
+			humans.callAll('think');
+			orcs.callAll('think');
 
 			this.commands.update();
 

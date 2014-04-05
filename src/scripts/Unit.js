@@ -20,6 +20,22 @@
 			this.addChild(selectBox);
 		},
 
+		createHealthBar: function() {
+			var y = this.height / 2;
+			var healthBar = this.healthBar = new HealthBar(this.game, 0, -y);
+			healthBar.anchor.setTo(0.5, 1);
+			healthBar.smoothed = false;
+			healthBar.visible = false;
+			this.addChild(healthBar);
+		},
+
+		setHp: function(curr, max) {
+			if(max !== undefined)
+				this.maxHp = Math.max(1, max);
+			this.currHp = Math.min(curr || 0, this.maxHp);
+			this.healthBar.setHp(this.currHp, this.maxHp);
+		},
+
 		send: function(msg) {
 			if(this.onMessage) 
 				this.onMessage(msg);
@@ -35,7 +51,7 @@
 			return this.selectBox.visible;
 		},
 		set: function(val) {
-			return this.selectBox.visible = !!val;
+			return this.healthBar.visible = this.selectBox.visible = !!val;
 		}
 	});
 

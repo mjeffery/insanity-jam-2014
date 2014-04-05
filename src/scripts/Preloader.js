@@ -23,9 +23,13 @@
 			Archer.preload(load);
 			Peasant.preload(load);
 			Priest.preload(load);
+			Orc.preload(load);
 			IconBar.preload(load);
 			CommandIndicator.preload(load);
 			Backdrop.preload(load);
+			HealthBar.preload(load);
+			BloodSpray.preload(load);
+			SlashEffect.preload(load);
 			//END PRELOAD
 		},
 		onLoadComplete: function() {
