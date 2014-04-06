@@ -1,7 +1,9 @@
 (function(exports) {
-	function Archer(game, x, y) {
-		Troop.call(this, game, x, y, 'archer');
+	function Archer(game, x, y, bloodspray) {
+		Troop.call(this, game, x, y, 'archer', bloodspray);
 		this.commands = Archer.COMMANDS;
+
+		this.setHp(75, 75);
 	}
 
 	Archer.prototype = Object.create(Troop.prototype);

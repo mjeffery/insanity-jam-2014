@@ -1,8 +1,9 @@
 (function(exports) {
 	
-	function Peasant(game, x, y) {
-		Troop.call(this, game, x, y, 'peasant');
+	function Peasant(game, x, y, bloodspray) {
+		Troop.call(this, game, x, y, 'peasant', bloodspray);
 		this.commands = Peasant.COMMANDS;
+		this.setHp(40, 40);
 	}
 
 	Peasant.prototype = Object.create(Troop.prototype);

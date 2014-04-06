@@ -1,7 +1,8 @@
 (function(exports) {
-	function Priest(game, x, y) {
-		Troop.call(this, game, x, y, 'priest');
+	function Priest(game, x, y, bloodspray) {
+		Troop.call(this, game, x, y, 'priest', bloodspray);
 		this.commands = Priest.COMMANDS;
+		this.setHp(30, 30);
 	}
 
 	Priest.prototype = Object.create(Troop.prototype);

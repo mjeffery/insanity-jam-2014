@@ -65,8 +65,8 @@
 				orcs = this.orcs = add.group();
 				spawn = new Spawn(game, humans, orcs);
 
-			humans.add(spawn.soldier(30, 16));
-			humans.add(spawn.soldier(31, 16));
+			humans.add(spawn.soldier(29, 16));
+			//humans.add(spawn.soldier(31, 16));
 			humans.add(spawn.archer(36, 16));
 			humans.add(spawn.peasant(39, 16));
 			humans.add(spawn.priest(40, 16));
@@ -78,9 +78,9 @@
 
 			//ORCS!!!!!
 			//TODO mvoe this whole section int is own management area
-			orcs.add(spawn.orc(12, 25));
-			orcs.add(spawn.orc(13, 25));
-			orcs.add(spawn.orc(14, 25));
+			//orcs.add(spawn.orc(12, 25));
+			//orcs.add(spawn.orc(13, 25));
+			//orcs.add(spawn.orc(14, 25));
 			orcs.add(spawn.orc(24, 18));
 
 			game.world.bringToTop(iconBar);

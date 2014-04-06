@@ -14,21 +14,11 @@
 			var array = [];
 			(function f(obj) {
 				if(obj instanceof Phaser.Group) {
-					var grp = dest,
-						start = grp.cursor,
-						i = start;
-
-					do {
-						f(i);
-						grp.next();
-						i = grp.cursor;
-					}
-					while(i && i != start);
-
-					grp.cursor = start;
+					dest.forEach(f, true);
 				}
-				else 
+				else if(obj) {
 					insertByDistSq(array, src, obj);
+				}
 			})(dest);
 
 			return array; 
@@ -36,8 +26,8 @@
 
 		findClosest: function(src, dest, n) {
 			if(n === undefined) n = 1;
-
-			var result = _(Util.distanceFrom(src, dest))
+			var array = Util.distanceFrom(src, dest);
+			var result = _(array)
 				.first(n)
 				.map(function(hash) {
 					return {
@@ -64,7 +54,7 @@
 			distSq: distanceSquared(a, b), 
 			value: b
 		};
-		var insertAt = _.sortedIndex(array, 'distSq');
+		var insertAt = _.sortedIndex(array, toAdd, 'distSq');
 
 		array.splice(insertAt, 0, toAdd); 
 	}

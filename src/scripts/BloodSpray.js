@@ -11,12 +11,15 @@
 	}
 
 	BloodSpray.prototype = {
-		spray: function(x, y) {
+		gush: function(x, y) { this.emit(x, y, 30); },
+		spray: function(x, y) { this.emit(x, y, 6); },
+
+		emit: function(x, y, count) {
 			var emitter = this.emitter;
 			emitter.x = x;
 			emitter.y = y;
 
-			emitter.start(true, 500, null, 6);
+			emitter.start(true, 500, null, count);
 		}
 	}
 

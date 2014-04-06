@@ -1,5 +1,5 @@
 (function(exports) {
-	function Troop(game, x, y, key) {
+	function Troop(game, x, y, key, bloodspray) {
 		Unit.call(this, game, x, y, key);
 
 		this.init();
@@ -9,7 +9,8 @@
 		this.createHealthBar();
 
 		this.activity = 'none';
-		this.dir = 'none';
+		this.dir = Phaser.NONE;
+		this.blood = bloodspray;
 
 		this.fall();
 	}	
@@ -27,65 +28,35 @@
 				case 'seeking':
 					if(Math.abs(this.target - this.body.x) < Troop.SEEK_TOLERANCE) {
 						//TODO fire a nudge bullet for spacing?
+						this.dir = Phaser.NONE;
 						this.stand();
 						this.activity = 'none';
 					}
 				break;
 			}
 
-			switch(this.state) {
-				case 'standing':
-					if(this.body.onFloor()) {
-						this.body.velocity.x = 0; //TODO control velocities?
-						if(this.activity == 'seeking') {
-							var dir = this.target > this.body.x ? 'right' : 'left';
-							this.walk(dir);
-						}
-					}
-					else 
-						this.fall();
-				break;
+			this.updateState();
+		},
 
-				case 'walking': 
-					if(this.body.onFloor()) {
-						if(this.activity === 'seeking') {
-							if(this.dir == 'left') {
-								if(this.target > this.body.x)
-									this.walk('right');
-								else if(this.body.blocked.left)
-									this.jump();
-							} 
-							else if(this.dir == 'right') { 
-								if(this.target < this.body.x)
-									this.walk('left');
-								else if(this.body.blocked.right) 
-									this.jump();
-							}
-						}
-						else if(this.activity === 'none') {
-							this.stand();
-						}
-					}
-					else 
-						this.fall();
-				break;
+		destination: function() {
+			if(this.activity === 'seeking')
+				return this.target;
+		},
 
-				case 'falling':
-					if(this.body.onFloor()) 
-						this.stand();
-				break;
+		damage: function(amount) {
+			this.currHp -= amount;
+			this.healthBar.setHp(this.currHp, this.maxHp);
 
-				case 'jumping':
-					if(this.body.velocity.y > 0)
-						this.fall();
-					else {
-						if(this.activity === 'seeking') {
-							if(this.target < this.body.x) this.left();
-							else if(this.target > this.body.y) this.right();
-						}
-					}
+			var x = this.x,
+				y = this.y;
 
-				break;
+			//TODO play some damage sounds on a slight delay
+			if(this.currHp <= 0) {
+				this.blood.gush(x, y);
+				this.destroy();
+			}
+			else {
+				this.blood.spray(x, y);
 			}
 		},
 
@@ -98,6 +69,7 @@
 			if(msg.target) this.seek(msg.target);
 			if(msg.command === 'stop') {
 				this.activity = 'none';
+				this.dir = Phaser.NONE;
 				this.target = null;
 			}
 		}

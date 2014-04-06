@@ -1,6 +1,6 @@
 (function(exports) {
-	function Soldier(game, x, y) {
-		Troop.call(this, game, x, y, 'knight');
+	function Soldier(game, x, y, bloodspray) {
+		Troop.call(this, game, x, y, 'knight', bloodspray);
 		this.commands = Soldier.COMMANDS;
 
 		this.setHp(100, 100);
