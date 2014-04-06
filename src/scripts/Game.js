@@ -59,11 +59,14 @@
 			commands.events.onStartCommand.add(backdrop.onStartCommand, backdrop);
 			commands.events.onEndCommand.add(backdrop.onEndCommand, backdrop);
 
+			// Projectiles
+			var arrows = this.arrows = new ArrowGroup(game);
+
 			// UNITS!!!
 			//TODO move this whole section into its own unit management area...
 			var humans = this.humans = add.group(),
 				orcs = this.orcs = add.group();
-				spawn = new Spawn(game, humans, orcs);
+				spawn = new Spawn(game, humans, orcs, arrows);
 
 			humans.add(spawn.soldier(29, 16));
 			//humans.add(spawn.soldier(31, 16));
@@ -83,6 +86,7 @@
 			//orcs.add(spawn.orc(14, 25));
 			orcs.add(spawn.orc(24, 18));
 
+			game.add.existing(arrows);	
 			game.world.bringToTop(iconBar);
 
 			game.camera.x = 1000;
@@ -91,6 +95,7 @@
 		update: function() {
 			var humans = this.humans,
 				orcs = this.orcs,
+				arrows = this.arrows,
 				physics = this.game.physics;
 
 			//TODO I don't like how the camera doesn't have a velocity...
@@ -110,6 +115,9 @@
 
 			physics.arcade.collide(humans, this.layer);
 			physics.arcade.collide(orcs, this.layer);
+			physics.arcade.collide(arrows, this.layer, Arrow.collideWorld, Arrow.processWorld);
+			physics.arcade.overlap(arrows, orcs, Arrow.collideOrc);
+
 			humans.callAll('think');
 			orcs.callAll('think');
 

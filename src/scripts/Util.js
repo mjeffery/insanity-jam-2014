@@ -5,8 +5,9 @@
 			proto[name] = function() {
 				var prev = this.__super;
 				this.__super = superFn;
-				fn.apply(this, arguments);
+				var retVal = fn.apply(this, arguments);
 				this.__super = prev;
+				return retVal;
 			}
 		},
 
@@ -38,6 +39,27 @@
 				.valueOf();
 
 			return n === 1 ? result[0] : result;
+		},
+
+		lobAtPoint: function(src, dest, velocity, gravity) {
+			var x = dest.x - src.x,
+				y = dest.y - src.y,
+				v = velocity,
+				vSq = v*v,
+				g = -gravity,
+				gx = g*x,
+				disc = vSq*vSq - g*(gx*x + 2*y*vSq);
+
+			if(disc <= 0)
+				return undefined;
+			else {
+				var discSqrt = Math.sqrt(disc),
+					a1 = Math.atan2(vSq + discSqrt, gx) + Math.PI;
+					a2 = Math.atan2(vSq - discSqrt, gx) + Math.PI;
+
+				return [a1, a2];
+			}
+
 		}
 
 	};

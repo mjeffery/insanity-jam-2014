@@ -30,6 +30,7 @@
 			HealthBar.preload(load);
 			BloodSpray.preload(load);
 			SlashEffect.preload(load);
+			Arrow.preload(load);
 			//END PRELOAD
 		},
 		onLoadComplete: function() {

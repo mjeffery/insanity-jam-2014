@@ -1,11 +1,13 @@
 (function(exports) {
-	function Spawn(game, humans, orcs) {
+	function Spawn(game, humans, orcs, arrows) {
 		this.game = game;
 		this.humans = humans;
 		this.orcs = orcs;
 
 		this.manblood = new BloodSpray(game, 'man-blood');
 		this.orcblood = new BloodSpray(game, 'orc-blood');
+
+		this.arrows = arrows;
 	}
 
 	function tileYToWorld(y) {
@@ -24,9 +26,14 @@
 		},
 
 		archer: function(x, y) {
-			var x = tileXToWorld(x);
-			var y = tileYToWorld(y);
-			return new Archer(this.game, x, y, this.manblood);
+			var x = tileXToWorld(x),
+				y = tileYToWorld(y),
+				unit = new Archer(this.game, x, y, this.manblood);
+
+			unit.foes = this.orcs;
+			unit.arrows = this.arrows;
+
+			return unit;
 		},
 
 		peasant: function(x, y) {
@@ -48,6 +55,7 @@
 			 	orc = new Orc(this.game, x, y, sex);
 
 			orc.foes = this.humans;
+			orc.blood = this.orcblood;
 
 			return orc;
 		}

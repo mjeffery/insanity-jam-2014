@@ -30,7 +30,7 @@
 						//TODO fire a nudge bullet for spacing?
 						this.dir = Phaser.NONE;
 						this.stand();
-						this.activity = 'none';
+						this.changeActivity('none');
 					}
 				break;
 			}
@@ -62,16 +62,18 @@
 
 		seek: function(target) {
 			this.target = target;
-			this.activity = 'seeking';
+			this.changeActivity('seeking');
+		},
+
+		stop: function() {
+			this.changeActivity('none');
+			this.dir = Phaser.NONE;
+			this.target = null;
 		},
 
 		onMessage: function(msg) {
 			if(msg.target) this.seek(msg.target);
-			if(msg.command === 'stop') {
-				this.activity = 'none';
-				this.dir = Phaser.NONE;
-				this.target = null;
-			}
+			if(msg.command === 'stop') this.stop();
 		}
 	});	
 

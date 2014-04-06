@@ -2,6 +2,7 @@
 	function Orc(game, x, y, sex) {
 		var key = (sex === Orc.MALE ? 'male-orc' : 'female-orc'); 
 		Phaser.Sprite.call(this, game, x, y, key);
+		this.setHp(100, 100);
 
 		this.init();
 
@@ -16,8 +17,11 @@
 
 	Orc.MALE = 'male';
 	Orc.FEMALE = 'female';
+
 	Orc.CLOSE_ENOUGH_X = 300;
 	Orc.CLOSE_ENOUGH_Y = 96;
+	Orc.TOO_FAR_X = 400;
+
 	Orc.WITHIN_ATTACK_RANGE = 24;
 	Orc.ATTACK_DAMAGE = 40;
 	Orc.TO_HIT_TIME = 200;
@@ -36,6 +40,7 @@
 		setHp: function(curr, max) {
 			if(max !== undefined)
 				this.maxHp = Math.max(1, max);
+			this.currHp = Math.min(this.maxHp, curr);
 		},
 
 		think: function() {
@@ -44,20 +49,23 @@
 			//TODO don't run this every frame, its not necessary...
 			//detect nearby humans & buildings
 			if(foes && this.activity !== 'cooling down') {
+				if(this.activity === 'hunting') {
+					if(this.prey) {
+						if(this.tooFar(this.prey)) 
+							this.changeActivity("none");
+					}
+					else {
+						console.log("error: hunting nothing");
+						this.changeActivity("none");
+					}
+				}
+
 				var closest = Util.findClosest(this, foes); 
 				if(closest) {
 					this.actualClosest = closest;
-					if(Math.abs(this.body.x - closest.value.x) <= Orc.CLOSE_ENOUGH_X &&
-					   Math.abs(this.body.y - closest.value.y) <= Orc.CLOSE_ENOUGH_Y)
-					{
-						if(this.activity == 'hunting') {
-							//is current prey too far away?
-							//determine if a target switch makes sense
-						}
-						else {
-							this.prey = closest.value;
-							this.activity = 'hunting';
-						}
+					if(this.closeEnough(closest.value) && this.activity !== 'hunting') {
+						this.prey = closest.value;
+						this.changeActivity('hunting');
 					}
 				}
 			}
@@ -72,12 +80,12 @@
 						}
 						else {
 							this.prey = null;
-							this.activity = "none";
+							this.changeActivity("none");
 						}
 					}	
 					else {
 						console.log('error: hunting nothing');
-						this.activity = 'none';
+						this.changeActivity('none');
 					}
 				break;
 			}
@@ -89,12 +97,22 @@
 			if(this.activity === 'hunting') {
 				if(this.prey) return this.prey.x;
 				else {
-					this.activity = 'none';
+					this.changeActivity('none');
 					console.log('error: hunting nothing')
 				}
 			}
 
 			return undefined;
+		},
+
+		closeEnough: function(target) {
+			return Math.abs(this.x - target.x) <= Orc.CLOSE_ENOUGH_X &&
+				   Math.abs(this.y - target.y) <= Orc.CLOSE_ENOUGH_Y;
+		},
+
+		tooFar: function(target) {
+			return Math.abs(this.x - target.x) >= Orc.TOO_FAR_X &&
+				   Math.abs(this.x - target.x) >= Orc.CLOSE_ENOUGH_Y;
 		},
 
 		withinRange: function(target) {
@@ -127,13 +145,13 @@
 				this.cooldown(Orc.COOLDOWN_TIME);
 			}
 			else {
-				if(this.activity === 'attacking') this.activity = "none";
+				this.changeActivity("none");
 				console.log("error: attacking nothing");
 			}
 		},
 
 		cooldown: function(time) {
-			this.activity = "cooling down";
+			this.changeActivity("cooling down");
 			this.stand();
 
 			this.game.time.events.add(time, this.wakeUp, this);
@@ -141,7 +159,23 @@
 
 		wakeUp: function() {
 			if(this.activity === 'cooling down')
-				this.activity = 'none';
+				this.changeActivity('none');
+		},
+
+		damage: function(amount) {
+			this.currHp -= amount;
+
+			var x = this.x,
+				y = this.y;
+
+			//TODO play some damage sounds on a slight delay
+			if(this.currHp <= 0) {
+				this.blood.gush(x, y);
+				this.destroy();
+			}
+			else {
+				this.blood.spray(x, y);
+			}
 		}
 	});
 

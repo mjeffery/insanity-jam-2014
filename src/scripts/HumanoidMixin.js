@@ -24,12 +24,6 @@
 			this.body.acceleration.y = 350;
 		},
 
-		setHp: function(curr, max) {
-			if(max !== undefined)
-				this.maxHp = Math.max(1, max);
-			this.currHp = Math.min(curr || 0, this.maxHp);
-			this.healthBar.setHp(this.currHp, this.maxHp);
-		},
 
 		// must implement a function called 'destination', return undefined if no target exists,
 		updateState: function() {
@@ -52,19 +46,19 @@
 						var dest = this.destination();
 						if(dest !== undefined) {
 							if(this.dir == Phaser.LEFT) {
-								if(dest > this.body.x)
+								if(dest > this.x)
 									this.walk(Phaser.RIGHT);
 								else if(this.body.blocked.left)
 									this.jump();
 							} 
 							else if(this.dir == Phaser.RIGHT) { 
-								if(dest < this.body.x)
+								if(dest < this.x)
 									this.walk(Phaser.LEFT);
 								else if(this.body.blocked.right) 
 									this.jump();
 							}
 						}
-						else if(this.activity === 'none') {
+						else if(this.activity === 'none') { // take out the none?
 							this.stand();
 						}
 					}
@@ -83,16 +77,19 @@
 					else {
 						var dest = this.destination();
 						if(dest !== undefined) {
-							if(dest < this.body.x) this.left();
-							else if(dest > this.body.y) this.right();
+							if(dest < this.x) this.left();
+							else if(dest > this.y) this.right();
 						}
 					}
 				break;
+
+				case 'cooldown':
+					break;
 			}
 		},
 
 		jump: function() {
-			this.state = 'jumping';
+			this.changeState('jumping');
 			this.body.velocity.y = this.jumpSpeed || mixin.DEFAULT_JUMP_SPEED;
 		},
 
@@ -107,7 +104,7 @@
 		},
 
 		stand: function() {
-			this.state = 'standing';
+			this.changeState('standing');
 			switch(this.dir) {
 				case Phaser.LEFT: this.animations.play('face-left'); break;
 				case Phaser.RIGHT: this.animations.play('face-right'); break;
@@ -116,23 +113,42 @@
 		},
 
 		fall: function() {
-			this.state = 'falling';
+			this.changeState('falling');
 			//this.animations.play('falling');
 		},
 
 		walk: function(dir) {
 			switch(dir) {
 				case Phaser.LEFT:
-					this.state = 'walking';
+					this.changeState('walking');
 					this.animations.play('walk-left');
 					this.left();
 				break;
 				case Phaser.RIGHT:
-					this.state = 'walking';
+					this.changeState('walking');
 					this.animations.play('walk-right');
 					this.right();
+				break;
 			}
 		},
+
+		changeState: function(newState) {
+			this.prevState = this.state;
+			if(newState != this.state) {
+				if(this.onExitState) this.onExitState(this.state);
+				if(this.onEnterState) this.onEnterState(newState);
+			}
+			this.state = newState; 
+		},
+
+		changeActivity: function(newActivity) {
+			this.prevActivity = this.activity;
+			if(newActivity !== this.activity) {
+				if(this.onStopActivity) this.onStopActivity(newActivity);
+				if(this.onStartActivity) this.onStartActivity(newActivity);
+			}
+			this.activity = newActivity;
+		}
 	}
 
 	exports.Mixin.humanoid = Mixin.create(mixin);	
