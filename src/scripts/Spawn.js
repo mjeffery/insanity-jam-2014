@@ -20,9 +20,13 @@
 
 	Spawn.prototype = {
 		soldier: function(x, y) {
-			var x = tileXToWorld(x);
-			var y = tileYToWorld(y);
-			return new Soldier(this.game, x, y, this.manblood);
+			var x = tileXToWorld(x),
+				y = tileYToWorld(y),
+				unit = new Soldier(this.game, x, y, this.manblood);
+
+			unit.foes = this.orcs;
+
+			return unit;
 		},
 
 		archer: function(x, y) {

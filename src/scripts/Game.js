@@ -69,7 +69,7 @@
 				spawn = new Spawn(game, humans, orcs, arrows);
 
 			humans.add(spawn.soldier(29, 16));
-			//humans.add(spawn.soldier(31, 16));
+			humans.add(spawn.soldier(31, 16));
 			humans.add(spawn.archer(36, 16));
 			humans.add(spawn.peasant(39, 16));
 			humans.add(spawn.priest(40, 16));

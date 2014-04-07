@@ -8,6 +8,7 @@
 
 		this.activity = "none";
 		this.state = "none";
+		this.walkSpeed = 60;
 
 		this.fall();
 	}
@@ -24,9 +25,8 @@
 
 	Orc.WITHIN_ATTACK_RANGE = 24;
 	Orc.ATTACK_DAMAGE = 40;
-	Orc.TO_HIT_TIME = 200;
 	Orc.COOLDOWN_TIME = 1000;
-
+	Orc.TO_HIT_TIME = 200;
 
 	Orc.preload = function(load) {
 		load.spritesheet('male-orc', 'assets/spritesheet/gentleman orc.png', 32, 32);
