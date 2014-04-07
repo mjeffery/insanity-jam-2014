@@ -5,6 +5,7 @@
 		FALL_RATE : 12,
 		DEFAULT_WALK_SPEED : 50,
 		DEFAULT_JUMP_SPEED : -220,
+		DEFAULT_GRAVITY: 350,
 
 		// Must be called in the constructor
 		init: function() {	
@@ -22,14 +23,21 @@
 			this.anchor.setTo(0.5, 0.5);
 			this.body.collideWorldBounds = true;
 			this.body.acceleration.y = 350;
+			this.gravityDir = Phaser.DOWN;
 		},
 
+		onFloor: function() {
+			switch(this.gravityDir) {
+				case Phaser.DOWN: return this.body.onFloor();
+				case Phaser.UP: return this.body.blocked.up;
+			}
+		},
 
 		// must implement a function called 'destination', return undefined if no target exists,
 		updateState: function() {
 			switch(this.state) {
 				case 'standing':
-					if(this.body.onFloor()) {
+					if(this.onFloor()) {
 						this.body.velocity.x = 0; //TODO control velocities?
 						var destination = this.destination();
 						if(destination !== undefined) {
@@ -42,7 +50,7 @@
 				break;
 
 				case 'walking': 
-					if(this.body.onFloor()) {
+					if(this.onFloor()) {
 						var dest = this.destination();
 						if(dest !== undefined) {
 							if(this.dir == Phaser.LEFT) {
@@ -67,13 +75,17 @@
 				break;
 
 				case 'falling':
-					if(this.body.onFloor()) 
+					if(this.onFloor()) 
 						this.stand();
 				break;
 
 				case 'jumping':
-					if(this.body.velocity.y > 0)
+					if(
+					   (this.gravityDir === Phaser.DOWN && this.body.velocity.y > 0) ||
+					   (this.gravityDir === Phaser.UP && this.body.velocity.y < 0)
+					){
 						this.fall();
+					}
 					else {
 						var dest = this.destination();
 						if(dest !== undefined) {
@@ -90,7 +102,8 @@
 
 		jump: function() {
 			this.changeState('jumping');
-			this.body.velocity.y = this.jumpSpeed || mixin.DEFAULT_JUMP_SPEED;
+			var speed = this.jumpSpeed || mixin.DEFAULT_JUMP_SPEED;
+			this.body.velocity.y = this.gravityDir === Phaser.DOWN ? speed : -speed; 
 		},
 
 		left: function() {
@@ -129,6 +142,16 @@
 					this.animations.play('walk-right');
 					this.right();
 				break;
+			}
+		},
+
+		changeGravity: function(dir) {
+			if(this.gravityDir != dir) {
+				this.gravityDir = dir;
+				this.game.time.events.add(300, function() {
+					this.body.acceleration.y = dir === Phaser.DOWN ? this.DEFAULT_GRAVITY : - this.DEFAULT_GRAVITY;
+					this.scale.y = -this.scale.y; //flip!
+				}, this);
 			}
 		},
 

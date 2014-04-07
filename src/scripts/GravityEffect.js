@@ -15,7 +15,7 @@
 	_.extend(SpellArrow.prototype, {
 		init: function() {
 			var rnd = this.game.rnd,
-				scale = rnd.realInRange(0.25, 1.5);
+				scale = rnd.realInRange(0.25, 1);
 
 			this.scale.x = scale;
 			this.scale.y = scale;

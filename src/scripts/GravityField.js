@@ -22,7 +22,7 @@
 	}
 
 	GravityField.changeGravity = function(field, humanoid) {
-		console.log('changing!');
+		humanoid.changeGravity(field.dir);
 	}
 
 	_.extend(GravityField.prototype, {

@@ -82,7 +82,7 @@
 							if(this.tooFar(this.prey)) {
 								this.changeActivity('patrolling');
 							}
-							else if(this.body.onFloor() && this.withinRange(this.prey)) {
+							else if(this.onFloor() && this.withinRange(this.prey)) {
 								this.attack(this.prey);
 							}
 						}

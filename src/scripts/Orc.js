@@ -74,7 +74,7 @@
 				case 'hunting': 
 					if(this.prey) {
 						if(this.prey.exists) {
-							if(this.body.onFloor() && this.withinRange(this.prey)) {	
+							if(this.onFloor() && this.withinRange(this.prey)) {	
 								this.attack();
 							}
 						}
