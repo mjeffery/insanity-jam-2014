@@ -32,7 +32,9 @@
 			move: this.addIcon('move', 1, 0),
 			attack: this.addIcon('attack', 3, 2),
 			defend: this.addIcon('defend', 5, 4),
-			stop: this.addIcon('stop', 6, 6)
+			stop: this.addIcon('stop', 6, 6),
+			gravityUp: this.addIcon('gravityUp', 8, 7),
+			gravityDown: this.addIcon('gravityDown', 10, 9)
 		};
 
 		this.events = new Phaser.Events(); //since "events" is checked for all over the place...
@@ -46,7 +48,7 @@
 	IconBar.prototype.constructor = IconBar;
 
 	IconBar.preload = function(load) {
-		load.spritesheet('command-icons', 'assets/spritesheet/command icons.png', 64, 64);
+		load.spritesheet('command-icons', 'assets/spritesheet/command icons.png', 64, 64, 11);
 	}
 
 	_.extend(IconBar.prototype, {

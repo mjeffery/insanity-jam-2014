@@ -48,6 +48,8 @@
 			commands.add('attack', new PickXCoordCommand(game, 'attack'));
 			commands.add('defend', new PickXCoordCommand(game, 'defend'));
 			commands.add('stop', new StopCommand());
+			commands.add('gravityUp', new GravitySpellCommand(game, Phaser.UP));
+			commands.add('gravityDown', new GravitySpellCommand(game, Phaser.DOWN));
 
 			// hooking up the wires...
 			selections.events.onSelectionChange.add(commands.onSelectionChange, commands);
@@ -61,12 +63,14 @@
 
 			// Projectiles
 			var arrows = this.arrows = new ArrowGroup(game);
+			var gravityEffect = this.gravityEffect = new GravityEffect(game);
+			var spells = this.spells = game.make.group(); 
 
 			// UNITS!!!
 			//TODO move this whole section into its own unit management area...
 			var humans = this.humans = add.group(),
 				orcs = this.orcs = add.group();
-				spawn = new Spawn(game, humans, orcs, arrows);
+				spawn = new Spawn(game, humans, orcs, arrows, spells, gravityEffect);
 
 			humans.add(spawn.soldier(29, 16));
 			humans.add(spawn.soldier(31, 16));
@@ -81,12 +85,15 @@
 
 			//ORCS!!!!!
 			//TODO mvoe this whole section int is own management area
-			//orcs.add(spawn.orc(12, 25));
-			//orcs.add(spawn.orc(13, 25));
-			//orcs.add(spawn.orc(14, 25));
+			orcs.add(spawn.orc(12, 25));
+			orcs.add(spawn.orc(13, 25));
+			orcs.add(spawn.orc(14, 25));
 			orcs.add(spawn.orc(24, 18));
 
 			game.add.existing(arrows);	
+			game.add.existing(spells);
+			game.add.existing(gravityEffect);
+
 			game.world.bringToTop(iconBar);
 
 			game.camera.x = 1000;
@@ -96,6 +103,7 @@
 			var humans = this.humans,
 				orcs = this.orcs,
 				arrows = this.arrows,
+				spells = this.spells,
 				physics = this.game.physics;
 
 			//TODO I don't like how the camera doesn't have a velocity...
@@ -117,6 +125,9 @@
 			physics.arcade.collide(orcs, this.layer);
 			physics.arcade.collide(arrows, this.layer, Arrow.collideWorld, Arrow.processWorld);
 			physics.arcade.overlap(arrows, orcs, Arrow.collideOrc);
+
+			physics.arcade.overlap(spells, orcs, GravityField.changeGravity);
+			physics.arcade.overlap(spells, humans, GravityField.changeGravity);
 
 			humans.callAll('think');
 			orcs.callAll('think');

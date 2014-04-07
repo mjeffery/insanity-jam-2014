@@ -1,5 +1,5 @@
 (function(exports) {
-	function Spawn(game, humans, orcs, arrows) {
+	function Spawn(game, humans, orcs, arrows, spells, gravityEffect) {
 		this.game = game;
 		this.humans = humans;
 		this.orcs = orcs;
@@ -8,6 +8,8 @@
 		this.orcblood = new BloodSpray(game, 'orc-blood');
 
 		this.arrows = arrows;
+		this.spells = spells;
+		this.gravityEffect = gravityEffect;
 	}
 
 	function tileYToWorld(y) {
@@ -47,9 +49,14 @@
 		},
 
 		priest: function(x, y) {
-			var x = tileXToWorld(x);
-			var y = tileYToWorld(y);
-			return new Priest(this.game, x, y, this.manblood);
+			var x = tileXToWorld(x),
+				y = tileYToWorld(y),
+				unit = new Priest(this.game, x, y, this.manblood);
+		
+			unit.gravityEffect = this.gravityEffect;
+			unit.spellsGroup = this.spells;
+
+			return unit;
 		},
 
 		orc: function(x, y) {

@@ -31,6 +31,8 @@
 			BloodSpray.preload(load);
 			SlashEffect.preload(load);
 			Arrow.preload(load);
+			GravityField.preload(load);
+			GravityEffect.preload(load);
 			//END PRELOAD
 		},
 		onLoadComplete: function() {
