@@ -33,6 +33,7 @@
 			Arrow.preload(load);
 			GravityField.preload(load);
 			GravityEffect.preload(load);
+			FogOfWar.preload(load);
 			//END PRELOAD
 		},
 		onLoadComplete: function() {

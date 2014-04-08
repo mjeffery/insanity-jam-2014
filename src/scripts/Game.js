@@ -94,6 +94,9 @@
 			game.add.existing(spells);
 			game.add.existing(gravityEffect);
 
+			var fog = this.fog = new FogOfWar(game, map);
+			humans.forEach(fog.track, fog);
+
 			game.world.bringToTop(iconBar);
 
 			game.camera.x = 1000;
@@ -131,6 +134,8 @@
 
 			humans.callAll('think');
 			orcs.callAll('think');
+
+			this.fog.update();
 
 			this.commands.update();
 

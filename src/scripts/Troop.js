@@ -163,6 +163,7 @@
 			//TODO play some damage sounds on a slight delay
 			if(this.currHp <= 0) {
 				this.blood.gush(x, y);
+				this.kill();
 				this.destroy();
 			}
 			else {
