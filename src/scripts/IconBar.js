@@ -29,12 +29,11 @@
 		Phaser.Group.call(this, game);
 
 		this.icons = {
-			move: this.addIcon('move', 1, 0),
-			attack: this.addIcon('attack', 3, 2),
-			defend: this.addIcon('defend', 5, 4),
+			move: this.addIcon('move', 1, 0, Phaser.Keyboard.E),
+			attack: this.addIcon('attack', 3, 2, Phaser.Keyboard.Q),
 			stop: this.addIcon('stop', 6, 6),
-			gravityUp: this.addIcon('gravityUp', 8, 7),
-			gravityDown: this.addIcon('gravityDown', 10, 9)
+			gravityUp: this.addIcon('gravityUp', 8, 7, Phaser.Keyboard.R),
+			gravityDown: this.addIcon('gravityDown', 10, 9, Phaser.Keyboard.F)
 		};
 
 		this.events = new Phaser.Events(); //since "events" is checked for all over the place...
@@ -52,12 +51,19 @@
 	}
 
 	_.extend(IconBar.prototype, {
-		addIcon: function(command, selected, unselected) {
-			var icon = new Icon(this.game, command, selected, unselected);
+		addIcon: function(command, selected, unselected, accelerator) {
+			var icon = new Icon(this.game, command, selected, unselected, accelerator);
 
 			icon.inputEnabled = true;
 			icon.events.onInputDown.add(this.onIconClicked, this);
 			icon.kill();
+
+			if(accelerator !== undefined) {
+				var key = icon.accelerator = this.game.input.keyboard.addKey(accelerator);
+				key.onDown.add(function() {
+					this.onIconClicked(icon);
+				}, this);
+			}
 
 			this.add(icon);
 
