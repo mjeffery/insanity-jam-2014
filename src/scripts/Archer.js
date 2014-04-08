@@ -12,7 +12,7 @@
 	Archer.prototype = Object.create(Troop.prototype);
 	Archer.prototype.constructor = Archer;
 
-	Archer.COMMANDS = ['move', 'attack', 'stop'];
+	Archer.COMMANDS = ['attack', 'move', 'stop'];
 
 	Archer.WITHIN_ATTACK_RANGE = 200;
 	Archer.ARROW_SPEED = 350;

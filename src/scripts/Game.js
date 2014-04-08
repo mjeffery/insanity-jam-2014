@@ -17,7 +17,8 @@
 		create: function() {
 			var add = this.add,
 				game = this.game,
-				physics = this.game.physics;
+				physics = this.game.physics,
+				keyboard = this.game.input.keyboard;
 
 			this.stage.backgroundColor = '#6495ED';
 			physics.startSystem(Phaser.Physics.ARCADE);
@@ -31,6 +32,7 @@
 			map.addTilesetImage('terrain', 'placeholder-tiles');
 			map.setCollisionBetween(2, 10, true);
 			layer.resizeWorld();
+
 
 
 			// ICON BAR
@@ -56,10 +58,6 @@
 			iconBar.events.onIconSelected.add(commands.onIconSelected, commands);
 			iconBar.events.onIconDeselected.add(commands.onIconDeselected, commands);
 
-			backdrop.events.onClickBackdrop.add(selections.onClickBackdrop, selections);
-
-			commands.events.onStartCommand.add(backdrop.onStartCommand, backdrop);
-			commands.events.onEndCommand.add(backdrop.onEndCommand, backdrop);
 
 			// Projectiles
 			var arrows = this.arrows = new ArrowGroup(game);
@@ -94,35 +92,58 @@
 			game.add.existing(spells);
 			game.add.existing(gravityEffect);
 
+			// FOG OF WAR
 			var fog = this.fog = new FogOfWar(game, map);
 			humans.forEach(fog.track, fog);
 
+
+			// Lasso selection
+			var lasso = this.lasso = new Lasso(game, humans);
+			game.add.existing(lasso);
+
+			backdrop.events.onInputDown.add(lasso.onInputDown, lasso);
+			backdrop.events.onInputUp.add(lasso.onInputUp, lasso);
+
+			commands.events.onStartCommand.add(lasso.onStartCommand, lasso);
+			commands.events.onEndCommand.add(lasso.onEndCommand, lasso);
+
+			lasso.events.onLasso.add(selections.onLasso, selections);
+
+			// put the icons on top!
 			game.world.bringToTop(iconBar);
+
+			// CAMERA
+			this.keys = {
+				up: keyboard.addKey(Phaser.Keyboard.UP),
+				down: keyboard.addKey(Phaser.Keyboard.DOWN),
+				left: keyboard.addKey(Phaser.Keyboard.LEFT),
+				right: keyboard.addKey(Phaser.Keyboard.RIGHT),
+				W: keyboard.addKey(Phaser.Keyboard.W),
+				A: keyboard.addKey(Phaser.Keyboard.A),
+				S: keyboard.addKey(Phaser.Keyboard.S),
+				D: keyboard.addKey(Phaser.Keyboard.D)
+			};
 
 			game.camera.x = 1000;
 			game.camera.y = 222;
 		},
 		update: function() {
-			var humans = this.humans,
+			var keys = this.keys,
+				humans = this.humans,
 				orcs = this.orcs,
 				arrows = this.arrows,
 				spells = this.spells,
 				physics = this.game.physics;
 
-			//TODO I don't like how the camera doesn't have a velocity...
-			var pointer = this.input.mousePointer.position;
-			if(pointer.x < Game.SCROLL_MARGIN) {
-				this.camera.x += -Game.CAMERA_SPEED;
-			}
-			else if(pointer.x > this.game.width - Game.SCROLL_MARGIN) {
+			if(keys.left.isDown || keys.A.isDown)
+				this.camera.x -= Game.CAMERA_SPEED;
+			else if(keys.right.isDown || keys.D.isDown)
 				this.camera.x += Game.CAMERA_SPEED;
-			}
-			if(pointer.y < Game.SCROLL_MARGIN) {
-				this.camera.y += -Game.CAMERA_SPEED;
-			}
-			else if(pointer.y > this.game.height - Game.SCROLL_MARGIN) {
+			if(keys.down.isDown || keys.S.isDown)
 				this.camera.y += Game.CAMERA_SPEED;
-			}
+			else if(keys.up.isDown || keys.W.isDown)
+				this.camera.y -= Game.CAMERA_SPEED;
+
 
 			physics.arcade.collide(humans, this.layer);
 			physics.arcade.collide(orcs, this.layer);

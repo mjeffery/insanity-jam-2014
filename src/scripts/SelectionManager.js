@@ -39,9 +39,25 @@
 			this.events.onSelectionChange.dispatch(this.units.slice(), added, removed);
 		},
 
-		onClickBackdrop: function() {
-			var removed = this.remove(this.units);
-			this.events.onSelectionChange.dispatch(this.units.slice(), [], removed);
+		onLasso: function(selected) {
+			var multiselect = this.shiftKey.isDown,
+				added, removed;
+
+			if(_.isEmpty(selected) && !multiselect) {
+				removed = this.remove(this.units);
+				this.events.onSelectionChange.dispatch(this.units.slice(), [], removed);
+			}
+			else {
+				if(multiselect) {
+					added = this.add(selected);
+				}
+				else {
+					removed = this.remove(_.without(this.units, selected));
+					added = this.add(selected); 
+				}
+
+				this.events.onSelectionChange.dispatch(this.units.slice(), added, removed);
+			}
 		},
 
 		add: function() {
@@ -56,6 +72,7 @@
 					if(idx < 0) {
 						this.units.push(unit);
 						added.push(unit);
+						unit.events.onKilled.addOnce(this.onKilled, this);
 					}
 				}, this);
 
@@ -82,6 +99,11 @@
 
 		forEach: function(callback, context) {
 			_.each(this.units, callback, context);
+		},
+
+		onKilled: function(sprite) {
+			var removed = this.remove(sprite);
+			this.events.onSelectionChange.dispatch(this.units.slice(), [], removed);
 		}
 	};
 

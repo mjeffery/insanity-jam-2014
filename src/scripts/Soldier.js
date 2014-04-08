@@ -9,7 +9,7 @@
 	Soldier.prototype = Object.create(Troop.prototype);
 	Soldier.prototype.constructor = Soldier;
 
-	Soldier.COMMANDS = ['move', 'attack', 'stop'];
+	Soldier.COMMANDS = ['attack', 'move', 'stop'];
 	Soldier.TO_HIT_TIME = 200;
 	Soldier.ATTACK_DAMAGE = 10;
 	Soldier.COOLDOWN_TIME = 600;
