@@ -104,6 +104,13 @@
 		onKilled: function(sprite) {
 			var removed = this.remove(sprite);
 			this.events.onSelectionChange.dispatch(this.units.slice(), [], removed);
+		},
+
+		onSpawn: function(unit) {
+			//TODO this is non-ideal...
+			if(! (unit instanceof Orc)) {
+				unit.events.onInputDown.add(this.onInputDown, this); 
+			}
 		}
 	};
 

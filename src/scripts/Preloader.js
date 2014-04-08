@@ -3,7 +3,6 @@
 
 	Preloader.FADE_OUT_TIME = 250;
 	Preloader.STAY_DARK_TIME = 100;
-	Preloader.NEXT_STATE = 'game';
 
 	Preloader.prototype = {
 		preload: function() {
@@ -17,7 +16,6 @@
 			load.setPreloadSprite(this.bar);
 
 			//PRELOAD RESOURCES HERE
-			Game.preload(load);	
 			Unit.preload(load);
 			Soldier.preload(load);
 			Archer.preload(load);
@@ -35,15 +33,19 @@
 			GravityEffect.preload(load);
 			FogOfWar.preload(load);
 			Lasso.preload(load);
+			HUD.preload(load);
+			FadingState.preload(load);
+			MainMenu.preload(load);
+			Mission.preload(load);
 			//END PRELOAD
+
+			this.load.bitmapFont('minecraftia', 'assets/font/minecraftia.png', 'assets/font/minecraftia.xml');
 		},
 		onLoadComplete: function() {
 			this.add.tween(this.bar).to({ alpha: 0 }, Preloader.FADE_OUT_TIME)
 				.start()
 				.onComplete.addOnce(function() {
-					this.time.events.add(Preloader.STAY_DARK_TIME, function() {
-						this.game.state.start(Preloader.NEXT_STATE); 
-					}, this);
+					this.time.events.add(Preloader.STAY_DARK_TIME, this.game.mainMenu, this.game);
 				}, this);
 
 			this.add.tween(this.overlay).to({ alpha: 0 }, Preloader.FADE_OUT_TIME)

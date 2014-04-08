@@ -154,6 +154,8 @@
 		},
 		
 		damage: function(amount) {
+			if(!this.exists) return;
+
 			this.currHp -= amount;
 			this.healthBar.setHp(this.currHp, this.maxHp);
 
@@ -192,6 +194,8 @@
 			}
 		}
 	});	
+
+	Object.defineProperty(Troop.prototype, 'team', { value: 'human' });
 
 	exports.Troop = Troop;
 })(this);

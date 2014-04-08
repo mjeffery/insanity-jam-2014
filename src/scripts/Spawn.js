@@ -10,6 +10,10 @@
 		this.arrows = arrows;
 		this.spells = spells;
 		this.gravityEffect = gravityEffect;
+
+		this.events = {
+			onSpawn: new Phaser.Signal()
+		}
 	}
 
 	function tileYToWorld(y) {
@@ -27,6 +31,9 @@
 				unit = new Soldier(this.game, x, y, this.manblood);
 
 			unit.foes = this.orcs;
+			this.humans.add(unit);
+
+			this.events.onSpawn.dispatch(unit);
 
 			return unit;
 		},
@@ -38,6 +45,9 @@
 
 			unit.foes = this.orcs;
 			unit.arrows = this.arrows;
+			this.humans.add(unit);
+
+			this.events.onSpawn.dispatch(unit);
 
 			return unit;
 		},
@@ -45,7 +55,12 @@
 		peasant: function(x, y) {
 			var x = tileXToWorld(x);
 			var y = tileYToWorld(y);
-			return new Peasant(this.game, x, y, this.manblood);
+			var unit = new Peasant(this.game, x, y, this.manblood);
+
+			this.events.onSpawn.dispatch(unit);
+			this.humans.add(unit);
+
+			return unit;
 		},
 
 		priest: function(x, y) {
@@ -55,6 +70,9 @@
 		
 			unit.gravityEffect = this.gravityEffect;
 			unit.spellsGroup = this.spells;
+			this.humans.add(unit);
+
+			this.events.onSpawn.dispatch(unit);
 
 			return unit;
 		},
@@ -63,12 +81,15 @@
 			var x = tileXToWorld(x),
 				y = tileYToWorld(y),
 				sex = this.game.rnd.pick(['male', 'female']),
-			 	orc = new Orc(this.game, x, y, sex);
+			 	unit = new Orc(this.game, x, y, sex);
 
-			orc.foes = this.humans;
-			orc.blood = this.orcblood;
+			unit.foes = this.humans;
+			unit.blood = this.orcblood;
+			this.orcs.add(unit);
 
-			return orc;
+			this.events.onSpawn.dispatch(unit);
+
+			return unit;
 		}
 	};
 

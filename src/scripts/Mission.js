@@ -1,15 +1,29 @@
 (function(exports) {
-	function Game() {}
-
-	Game.SCROLL_MARGIN = 50;
-	Game.CAMERA_SPEED = 10;
-
-	Game.preload = function(load) {
-		load.tilemap('test-map-0', 'assets/tilemap/test-map-1.json', undefined, Phaser.Tilemap.TILED_JSON);
-		load.image('placeholder-tiles', 'assets/img/placeholder tiles.png');
+	function Mission() {
+		FadingState.call(this);
 	}
 
-	Game.prototype = {
+	Mission.prototype = Object.create(FadingState.prototype);
+	Mission.prototype.constructor = Mission;
+
+	Mission.preload = function(load) {
+		load.image('placeholder-tiles', 'assets/img/placeholder tiles.png');
+		load.tilemap('test-map-0', 'assets/tilemap/test-map-1.json', undefined, Phaser.Tilemap.TILED_JSON);
+	}
+
+	_.extend(Mission.prototype, {
+
+		SCROLL_MARGIN: 50,
+		CAMERA_SPEED: 10,
+		FADE_IN_DURATION: 2500,
+		FADE_OUT_DURATION: 1500,
+		FADE_OUT_DELAY: 200,
+
+		//Like the state's constructor...
+		init: function(terrainKey) {
+			this.terrainKey = terrainKey || 'test-map-0';
+		},
+
 		create: function() {
 			var add = this.add,
 				game = this.game,
@@ -23,7 +37,7 @@
 			game.add.existing(backdrop);
 
 			// TILEMAP
-			var map = this.map = add.tilemap('test-map-0');
+			var map = this.map = add.tilemap(this.terrainKey);
 			var layer = this.layer = map.createLayer('terrain');
 			map.addTilesetImage('terrain', 'placeholder-tiles');
 			map.setCollisionBetween(2, 10, true);
@@ -31,8 +45,8 @@
 
 			// ICON BAR
 			var iconBar = this.iconBar = new IconBar(game);
-			iconBar.x = Game.SCROLL_MARGIN;
-			iconBar.y = 600 - (Game.SCROLL_MARGIN + 64);
+			iconBar.x = this.SCROLL_MARGIN;
+			iconBar.y = 600 - (this.SCROLL_MARGIN + 64);
 			iconBar.fixedToCamera = true;
 
 			// SELECTION MANAGER
@@ -64,19 +78,23 @@
 			// GAME RULES
 			var rules = this.rules = new GameRules(game);
 
+			rules.events.onVictory.add(this.onVictory, this);
+			rules.events.onDefeat.add(this.onDefeat, this);
+
 			spawn.events.onSpawn.add(rules.onSpawn, rules);
 			spawn.events.onSpawn.add(selections.onSpawn, selections);
 
 			// MISSION Parameters
+			
 			spawn.soldier(29, 16);
 			spawn.soldier(31, 16);
 			spawn.archer(36, 16);
-			spawn.peasant(39, 16);
-			spawn.priest(40, 16);
+			//spawn.peasant(39, 16);
+			//spawn.priest(40, 16);
 
-			spawn.orc(12, 25);
-			spawn.orc(13, 25);
-			spawn.orc(14, 25);
+			//spawn.orc(12, 25);
+			//spawn.orc(13, 25);
+			//spawn.orc(14, 25);
 			spawn.orc(24, 18);
 
 			// This section ensure proper visual ordering...
@@ -115,8 +133,11 @@
 				D: keyboard.addKey(Phaser.Keyboard.D)
 			};
 
-			game.camera.x = 1000;
+			// Point the camera somewhere
+			game.camera.x = 800;
 			game.camera.y = 222;
+
+			this.fadeIn(this.FADE_IN_DURATION);
 		},
 		update: function() {
 			var keys = this.keys,
@@ -128,13 +149,13 @@
 				physics = this.game.physics;
 
 			if(keys.left.isDown || keys.A.isDown)
-				this.camera.x -= Game.CAMERA_SPEED;
+				this.camera.x -= this.CAMERA_SPEED;
 			else if(keys.right.isDown || keys.D.isDown)
-				this.camera.x += Game.CAMERA_SPEED;
+				this.camera.x += this.CAMERA_SPEED;
 			if(keys.down.isDown || keys.S.isDown)
-				this.camera.y += Game.CAMERA_SPEED;
+				this.camera.y += this.CAMERA_SPEED;
 			else if(keys.up.isDown || keys.W.isDown)
-				this.camera.y -= Game.CAMERA_SPEED;
+				this.camera.y -= this.CAMERA_SPEED;
 
 			physics.arcade.collide(humans, this.layer);
 			physics.arcade.collide(orcs, this.layer);
@@ -150,8 +171,22 @@
 			this.fog.update();
 			this.commands.update();
 			this.rules.update();
-		}
-	};
+		},
 
-	exports.Game = Game;
+		onVictory: function(score) {
+			this.fadeOut(this.FADE_OUT_DURATION, this.FADE_OUT_DELAY)
+				.onComplete.addOnce(function() {
+					this.game.victory(score);
+				}, this);
+		},
+
+		onDefeat: function(score) {
+			this.fadeOut(this.FADE_OUT_DURATION, this.FADE_OUT_DELAY)
+				.onComplete.addOnce(function() {
+					this.game.defeat();
+				}, this);
+		} 
+	});
+
+	exports.Mission = Mission;
 })(this);

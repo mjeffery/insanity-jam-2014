@@ -163,6 +163,8 @@
 		},
 
 		damage: function(amount) {
+			if(!this.exists) return;
+			
 			this.currHp -= amount;
 
 			var x = this.x,
@@ -171,6 +173,7 @@
 			//TODO play some damage sounds on a slight delay
 			if(this.currHp <= 0) {
 				this.blood.gush(x, y);
+				this.kill();
 				this.destroy();
 			}
 			else {
@@ -178,6 +181,8 @@
 			}
 		}
 	});
+
+	Object.defineProperty(Orc.prototype, 'team', { value: 'orc' });
 
 	exports.Orc = Orc;
 })(this);
