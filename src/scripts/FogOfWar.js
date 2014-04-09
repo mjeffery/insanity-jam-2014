@@ -28,6 +28,19 @@
 	FogOfWar.DEFAULT_SIGHT_RANGE = 200;
 
 	FogOfWar.prototype = {
+		attach: function() {
+			this.game.world.bringToTop(this.fogMap);
+		},
+
+		reveal: function(sprite, radius) {
+			var layer = this.fogLayer,
+				x = layer.getTileX(sprite.x),
+				y = layer.getTileY(sprite.y),
+				r = radius || FogOfWar.DEFAULT_SIGHT_RANGE;
+
+			this.setVisible(x, y, r, true);
+		}, 
+
 		track: function(unit) {
 			if(_.findIndex(this.units, { unit: unit }) < 0) {
 				var layer = this.fogLayer,

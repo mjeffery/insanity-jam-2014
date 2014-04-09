@@ -12,10 +12,6 @@
 
 	_.extend(MainMenu.prototype, {
 
-		preload: function() {
-
-		},
-
 		create: function() {
 			var title = this.add.image(400, -300, 'title');
 			title.anchor.setTo(0.5, 0.5);
@@ -41,9 +37,6 @@
 		},
 
 		update: function() {
-			//if(this.game.input.activePointer.isDown)
-			//	this.clicked = true;
-
 			if(this.clicked && this.ready) {
 				this.clicked = false;
 				this.fadeOut(600).onComplete.addOnce(this.game.nextMission, this.game);

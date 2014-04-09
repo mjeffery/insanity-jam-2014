@@ -42,7 +42,7 @@ module.exports = function(grunt) {
 		},
 		filerev: {
 			assets: {
-				src: 'src/assets/**/*.{png,mp3,ogg,json}',
+				src: 'src/assets/**/*.{png,mp3,ogg,json,xml}',
 				dest: 'dist/assets'
 			}
 		},

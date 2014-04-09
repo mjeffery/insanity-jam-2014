@@ -52,6 +52,15 @@
 			this.cooldown(Archer.COOLDOWN_TIME);
 		},
 
+		withinRange: function(target) {
+			var limit = this.withinAttackRange || Troop.WITHIN_ATTACK_RANGE;
+			return Phaser.Point.distance(this, target) <= limit;
+		},
+
+		outOfReach: function(target) {
+			return !this.withinRange(target);
+		},
+
 		onMessage: function(msg) {
 			switch(msg.command) {
 				case 'move': this.seek(msg.target); break;

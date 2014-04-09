@@ -3,7 +3,8 @@
 		Troop.call(this, game, x, y, 'knight', bloodspray);
 		this.commands = Soldier.COMMANDS;
 
-		this.setHp(100, 100);
+		this.setHp(200, 200);
+		this.healCount = 0;
 	}
 
 	Soldier.prototype = Object.create(Troop.prototype);
@@ -20,19 +21,19 @@
 
 	_.extend(Soldier.prototype, {
 		attack: function(target) {
-			var x = target.body.x,
-				y = target.body.y;
+			var x = target.x,
+				y = target.y;
 
-			if(this.body.x < x) {
+			if(this.x < x) {
 				this.dir = Phaser.RIGHT;
 				this.animations.play('face-right'); 
 			}
-			else if(this.body.x > x) {
+			else if(this.x > x) {
 				this.dir = Phaser.LEFT;
 				this.animations.play('face-left');
 			}
 
-			var slash = new SlashEffect(this.game, x + 16, y + 16, this.dir);
+			var slash = new SlashEffect(this.game, x, y, this.dir);
 			this.game.add.existing(slash);
 
 			//TODO play sound
@@ -42,6 +43,14 @@
 
 			this.nextActivity = 'patrolling';
 			this.cooldown(Soldier.COOLDOWN_TIME);
+		},
+
+		update: function() {
+			this.healCount += 1;
+		if(this.healCount >= 35) {
+				this.healCount = 0;
+				this.setHp(this.currHp + 10);
+			}
 		}
 	});
 

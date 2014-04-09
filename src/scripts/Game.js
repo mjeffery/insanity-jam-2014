@@ -87,6 +87,7 @@
 			// FOG OF WAR
 			var fog = this.fog = new FogOfWar(game, map);
 			humans.forEach(fog.track, fog);
+			fog.fogLayer.alpha = 0;
 
 			// Lasso selection
 			var lasso = this.lasso = new Lasso(game, humans);

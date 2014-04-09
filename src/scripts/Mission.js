@@ -71,9 +71,10 @@
 			var spells = this.spells = game.make.group(); 
 
 			// SPAWNING 
-			var humans = this.humans = add.group(),
+			var huts = add.group(),
+				humans = this.humans = add.group(),
 				orcs = this.orcs = add.group();
-				spawn = new Spawn(game, humans, orcs, arrows, spells, gravityEffect);
+				spawn = new Spawn(game, humans, orcs, arrows, spells, gravityEffect, huts);
 
 			// GAME RULES
 			var rules = this.rules = new GameRules(game);
@@ -84,26 +85,88 @@
 			spawn.events.onSpawn.add(rules.onSpawn, rules);
 			spawn.events.onSpawn.add(selections.onSpawn, selections);
 
-			// MISSION Parameters
-			
-			spawn.soldier(29, 16);
-			spawn.soldier(31, 16);
-			spawn.archer(36, 16);
-			//spawn.peasant(39, 16);
-			//spawn.priest(40, 16);
+			var Hud = this.Hud = new HUD(game);
+			rules.events.onStateChange.add(Hud.onStateChange, Hud);
 
-			//spawn.orc(12, 25);
-			//spawn.orc(13, 25);
-			//spawn.orc(14, 25);
+			// FOG OF WAR
+			var fog = this.fog = new FogOfWar(game, map);
+			spawn.fog = fog;
+
+			//This is just a hack to add some randomness in the next few hours
+			residents = [
+				['peasant', 'peasant', 'orc'],
+				['peasant', 'peasant'],
+				['archer', 'archer', 'soldier'],
+				['peasant', 'priest', 'soldier'],
+				['soldier', 'soldier', 'soldier'],
+				['archer', 'archer', 'archer'],
+				['peasant', 'peasant', 'priest'],
+				['peasant', 'archer', 'soldier'],
+				['peasant', 'archer', 'soldier'],
+				['soldier', 'archer'],
+				['priest', 'priest'],
+				['peasant', 'peasant', 'peasant', 'peasant'],
+				['soldier', 'soldier', 'soldier'],
+				['archer', 'archer'],
+				['archer', 'archer'],
+				['orc', 'orc'],
+				['orc', 'orc'],
+				['orc', 'orc', 'orc'],
+				['priest', 'peasant']
+			];
+			var wild = function() {
+				var index = game.rnd.integerInRange(0, residents.length),
+					ret = residents[index];
+				residents.splice(index, 1);
+				return ret;
+			}
+
+			// MISSION Parameters
+			spawn.hut(46, 29, ['peasant', 'soldier', 'archer']);
+			spawn.hut(9, 8, wild());
+			spawn.hut(12, 8, wild());
+			spawn.hut(9, 33, wild());
+			spawn.hut(39, 22, wild());
+			spawn.hut(4, 15, wild());
+			spawn.hut(24, 24, wild());
+			spawn.hut(42, 9, wild());
+			spawn.hut(51, 15, wild());
+			spawn.hut(28, 33, wild());
+			spawn.hut(45, 3, wild());
+			spawn.hut(23, 33, wild());
+			
+
+			//spawn.peasant(29, 16);
+			spawn.soldier(35, 16);
+			spawn.soldier(37, 16);
+			spawn.archer(36, 16);
+			spawn.archer(38, 16);
+			spawn.peasant(39, 16);
+			spawn.priest(40, 16);
+
+			spawn.orc(12, 25);
+			spawn.orc(13, 25);
+			spawn.orc(14, 25);
 			spawn.orc(24, 18);
+
+			var orcx = [24,22,24,16,42,7,48,55,37],
+				orcy = [18,25,5,34,4,9,4,28,31];
+			for(var i = 0; i < orcx.length; i++) {
+				if(this.game.math.chanceRoll(75)) {
+					if(this.game.math.chanceRoll(25))
+						spawn.orcParty(orcx[i], orcy[i]);
+					else
+						spawn.orc(orcx[i], orcy[i]);
+				}
+				
+			}
 
 			// This section ensure proper visual ordering...
 			game.add.existing(arrows);	
 			game.add.existing(spells);
 			game.add.existing(gravityEffect);
 
-			// FOG OF WAR
-			var fog = this.fog = new FogOfWar(game, map);
+			fog.attach();
 			humans.forEach(fog.track, fog);
 
 			// Lasso selection
@@ -120,6 +183,8 @@
 
 			// put the icons on top!
 			game.world.bringToTop(iconBar);
+			game.world.bringToTop(Hud);
+
 
 			// CAMERA
 			this.keys = {
@@ -161,6 +226,9 @@
 			physics.arcade.collide(orcs, this.layer);
 			physics.arcade.collide(arrows, this.layer, Arrow.collideWorld, Arrow.processWorld);
 			physics.arcade.overlap(arrows, orcs, Arrow.collideOrc);
+
+			physics.arcade.collide(humans, humans);
+			physics.arcade.collide(orcs, orcs);
 
 			physics.arcade.overlap(spells, orcs, GravityField.changeGravity);
 			physics.arcade.overlap(spells, humans, GravityField.changeGravity);

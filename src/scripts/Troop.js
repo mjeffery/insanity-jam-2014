@@ -68,7 +68,9 @@
 						var closest = Util.findClosest(this, foes);
 						if(closest) {
 							this.actualClosest = closest;
-							if(this.closeEnough(closest.value)) { //TODO Add a visibility check
+							if(this.closeEnough(closest.value) &&
+							   !this.outOfReach(closest.value))
+							{
 								this.prey = closest.value;
 								this.changeActivity('attacking');
 							}
@@ -81,6 +83,7 @@
 						if(this.prey.exists) {
 							if(this.tooFar(this.prey)) {
 								this.changeActivity('patrolling');
+								this.stand();
 							}
 							else if(this.onFloor() && this.withinRange(this.prey)) {
 								this.attack(this.prey);
@@ -117,10 +120,20 @@
 
 		tooFar: function(target) {
 			var xLimit = this.tooFarX || Troop.TOO_FAR_X,
-				yLimit = this.closeEnoughY || Troop.CLOSE_ENOUGH_Y;
+				yLimit = this.closeEnoughY || Troop.CLOSE_ENOUGH_Y,
+				dx = Math.abs(this.x - target.x), 
+				dy = Math.abs(this.y - target.y);
 
-			return Math.abs(this.x - target.x) >= xLimit &&
-				   Math.abs(this.x - target.x) >= yLimit; 
+				return this.outOfReach(target) ||
+						(dx >= xLimit &&
+						 dy >= yLimit);
+		},
+
+		outOfReach: function(target) {
+			var dx = Math.abs(this.x - target.x), 
+				dy = Math.abs(this.y - target.y);
+
+			return (dx <= Troop.SEEK_TOLERANCE + 2 && dy >= 16);
 		},
 
 		withinRange: function(target) {

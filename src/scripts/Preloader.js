@@ -37,6 +37,7 @@
 			FadingState.preload(load);
 			MainMenu.preload(load);
 			Mission.preload(load);
+			Hut.preload(load);
 			//END PRELOAD
 
 			this.load.bitmapFont('minecraftia', 'assets/font/minecraftia.png', 'assets/font/minecraftia.xml');

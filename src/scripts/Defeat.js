@@ -9,7 +9,7 @@
 	_.extend(Defeat.prototype, {
 		create: function() {
 			this.stage.backgroundColor = '#000000';
-			this.game.add.bitmapText(0, 0, 'minecraftia', 'The Orcs have Risen!\nGame Over', 24);
+			this.game.add.bitmapText(25, 25, 'minecraftia', 'The Orcs have Risen!\nGame Over', 24);
 			var text = this.game.add.bitmapText(325, 425, 'minecraftia', 'Click to Continue', 17); 
 			this.fadeIn(2500).onComplete.add(function() {
 				this.ready = true;

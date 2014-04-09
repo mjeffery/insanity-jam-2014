@@ -7,6 +7,7 @@
 				orcs: 0
 			},
 			pending: {	// counts of enemies that might 
+				peasants: 0,
 				humans: 0,
 				orcs: 0
 			},
@@ -41,7 +42,7 @@
 					this.events.onDefeat.dispatch();
 				}
 				else if(this.state.count.orcs <= 0) { // TODO factor random spawns in?
-					this.events.onVictory.dispatch(this.score);
+					this.events.onVictory.dispatch(this.state.count.peasants);
 				}
 			}
 		},

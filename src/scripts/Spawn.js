@@ -1,8 +1,9 @@
 (function(exports) {
-	function Spawn(game, humans, orcs, arrows, spells, gravityEffect) {
+	function Spawn(game, humans, orcs, arrows, spells, gravityEffect, huts) {
 		this.game = game;
 		this.humans = humans;
 		this.orcs = orcs;
+		this.huts = huts;
 
 		this.manblood = new BloodSpray(game, 'man-blood');
 		this.orcblood = new BloodSpray(game, 'orc-blood');
@@ -25,9 +26,9 @@
 	}
 
 	Spawn.prototype = {
-		soldier: function(x, y) {
-			var x = tileXToWorld(x),
-				y = tileYToWorld(y),
+		soldier: function(tx, ty, useWorld) {
+			var x = useWorld ? tx : tileXToWorld(tx),
+				y = useWorld ? ty : tileYToWorld(ty),
 				unit = new Soldier(this.game, x, y, this.manblood);
 
 			unit.foes = this.orcs;
@@ -38,9 +39,9 @@
 			return unit;
 		},
 
-		archer: function(x, y) {
-			var x = tileXToWorld(x),
-				y = tileYToWorld(y),
+		archer: function(tx, ty, useWorld) {
+			var x = useWorld ? tx : tileXToWorld(tx),
+				y = useWorld ? ty : tileYToWorld(ty),
 				unit = new Archer(this.game, x, y, this.manblood);
 
 			unit.foes = this.orcs;
@@ -52,10 +53,10 @@
 			return unit;
 		},
 
-		peasant: function(x, y) {
-			var x = tileXToWorld(x);
-			var y = tileYToWorld(y);
-			var unit = new Peasant(this.game, x, y, this.manblood);
+		peasant: function(tx, ty, useWorld) {
+			var x = useWorld ? tx : tileXToWorld(tx),
+				y = useWorld ? ty : tileYToWorld(ty),
+				unit = new Peasant(this.game, x, y, this.manblood);
 
 			this.events.onSpawn.dispatch(unit);
 			this.humans.add(unit);
@@ -63,9 +64,9 @@
 			return unit;
 		},
 
-		priest: function(x, y) {
-			var x = tileXToWorld(x),
-				y = tileYToWorld(y),
+		priest: function(tx, ty, useWorld) {
+			var x = useWorld ? tx : tileXToWorld(tx),
+				y = useWorld ? ty : tileYToWorld(ty),
 				unit = new Priest(this.game, x, y, this.manblood);
 		
 			unit.gravityEffect = this.gravityEffect;
@@ -77,9 +78,9 @@
 			return unit;
 		},
 
-		orc: function(x, y) {
-			var x = tileXToWorld(x),
-				y = tileYToWorld(y),
+		orc: function(tx, ty, useWorld) {
+			var x = useWorld ? tx : tileXToWorld(tx),
+				y = useWorld ? ty : tileYToWorld(ty),
 				sex = this.game.rnd.pick(['male', 'female']),
 			 	unit = new Orc(this.game, x, y, sex);
 
@@ -90,6 +91,26 @@
 			this.events.onSpawn.dispatch(unit);
 
 			return unit;
+		},
+
+		hut: function(x, y, units) {
+			var x = tileXToWorld(x),
+				y = tileYToWorld(y),
+				hut = new Hut(this.game, x, y+16, this.humans, this.fog, this, units);
+
+			this.huts.add(hut);
+
+			return hut;
+		},
+
+		orcParty: function(x, y) {
+			var x = tileXToWorld(x),
+				y = tileYToWorld(y);
+
+			this.orc(x - 16, y, true);
+			if(this.game.math.chanceRoll(10))
+				this.orc(x, y, true);
+			this.orc(x + 16, y, true);
 		}
 	};
 

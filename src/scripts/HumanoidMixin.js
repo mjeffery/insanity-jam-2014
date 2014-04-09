@@ -19,10 +19,11 @@
 			this.animations.play('stand');
 
 			game.physics.enable(this, Phaser.Physics.ARCADE);
+			this.body.setSize(14, 32, 9, 0);
 
 			this.anchor.setTo(0.5, 0.5);
 			this.body.collideWorldBounds = true;
-			this.body.acceleration.y = 350;
+			this.body.acceleration.y = this.DEFAULT_GRAVITY;
 			this.gravityDir = Phaser.DOWN;
 		},
 
@@ -58,11 +59,15 @@
 									this.walk(Phaser.RIGHT);
 								else if(this.body.blocked.left)
 									this.jump();
+								else if(this.body.touching.left || this.body.touching.down)
+									this.jump();
 							} 
 							else if(this.dir == Phaser.RIGHT) { 
 								if(dest < this.x)
 									this.walk(Phaser.LEFT);
 								else if(this.body.blocked.right) 
+									this.jump();
+								else if(this.body.touching.right || this.body.touching.down)
 									this.jump();
 							}
 						}

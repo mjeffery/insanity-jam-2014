@@ -2,7 +2,8 @@
 	function Priest(game, x, y, bloodspray) {
 		Troop.call(this, game, x, y, 'priest', bloodspray);
 		this.commands = Priest.COMMANDS;
-		this.setHp(30, 30);
+		this.setHp(90, 90);
+		this.walkSpeed = 90;
 
 		this.castTarget = new Phaser.Point();
 		this.castTarget.setTo(-1, -1);

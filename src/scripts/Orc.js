@@ -19,7 +19,7 @@
 	Orc.MALE = 'male';
 	Orc.FEMALE = 'female';
 
-	Orc.CLOSE_ENOUGH_X = 300;
+	Orc.CLOSE_ENOUGH_X = 200;
 	Orc.CLOSE_ENOUGH_Y = 96;
 	Orc.TOO_FAR_X = 400;
 
@@ -49,17 +49,6 @@
 			//TODO don't run this every frame, its not necessary...
 			//detect nearby humans & buildings
 			if(foes && this.activity !== 'cooling down') {
-				if(this.activity === 'hunting') {
-					if(this.prey) {
-						if(this.tooFar(this.prey)) 
-							this.changeActivity("none");
-					}
-					else {
-						console.log("error: hunting nothing");
-						this.changeActivity("none");
-					}
-				}
-
 				var closest = Util.findClosest(this, foes); 
 				if(closest) {
 					this.actualClosest = closest;
@@ -74,8 +63,14 @@
 				case 'hunting': 
 					if(this.prey) {
 						if(this.prey.exists) {
-							if(this.onFloor() && this.withinRange(this.prey)) {	
-								this.attack();
+							if(this.tooFar(this.prey)) {
+								this.changeActivity("none");
+								this.stand();
+							} 
+							else {
+								if(this.onFloor() && this.withinRange(this.prey)) {	
+									this.attack();
+								}
 							}
 						}
 						else {
@@ -111,8 +106,13 @@
 		},
 
 		tooFar: function(target) {
-			return Math.abs(this.x - target.x) >= Orc.TOO_FAR_X &&
-				   Math.abs(this.x - target.x) >= Orc.CLOSE_ENOUGH_Y;
+			var dx = Math.abs(this.x - target.x), 
+				dy = Math.abs(this.y - target.y);
+
+				return (dx <= Troop.SEEK_TOLERANCE && 
+						dy >= 16) ||
+						(dx >= Orc.TOO_FAR_X &&
+						 dy >= Orc.CLOSE_ENOUGH_Y);
 		},
 
 		withinRange: function(target) {
@@ -122,19 +122,19 @@
 
 		attack: function() {
 			if(this.prey) {
-				var x = this.prey.body.x,
-					y = this.prey.body.y;
+				var x = this.prey.x,
+					y = this.prey.y;
 
-				if(this.body.x < x) {
+				if(this.x < x) {
 					this.dir = Phaser.RIGHT;
 					this.animations.play('face-right'); 
 				}
-				else if(this.body.x > x) {
+				else if(this.x > x) {
 					this.dir = Phaser.LEFT;
 					this.animations.play('face-left');
 				}
 
-				var slash = new SlashEffect(this.game, x + 16, y + 16, this.dir);
+				var slash = new SlashEffect(this.game, x,  y, this.dir);
 				this.game.add.existing(slash);
 
 				//TODO play sound

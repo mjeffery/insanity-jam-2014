@@ -13,8 +13,8 @@
 			
 			fader.width = game.width;
 			fader.height = game.height;
-			fader.fixToCamera = true;
-			fader.bringToTop();
+			fader.fixedToCamera = true;
+			game.world.bringToTop(fader);
 
 			return fader;
 		},
