@@ -3,7 +3,7 @@
 		Phaser.Sprite.call(this, game, x, y, 'hut');
 		this.anchor.setTo(0.5, 0.5);
 
-		this.units = units;
+		this.units = units || [];
 		this.humans = humans;
 		this.fog = fogOfWar;
 		this.spawn = spawn;

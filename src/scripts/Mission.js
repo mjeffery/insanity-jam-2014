@@ -118,7 +118,7 @@
 				var index = game.rnd.integerInRange(0, residents.length),
 					ret = residents[index];
 				residents.splice(index, 1);
-				return ret;
+				return ret || [];
 			}
 
 			// MISSION Parameters
